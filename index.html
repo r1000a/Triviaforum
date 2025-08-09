@@ -432,15 +432,44 @@
 
     /************ Participantes del foro (mapa) ************/
     // (Recortado: podés pegar aquí tu FORO_PARTICIPANTS original si querés validación estricta)
-    const FORO_PARTICIPANTS = {};
+    let FORO_PARTICIPANTS = {}; // opcional, no se usa ya para asignar equipo
+
+// Lista blanca de cédulas habilitadas (sin dígito verificador).
+// Cargada desde un archivo externo para mantener el index.html liviano.
+// Crear en la raíz del repo un archivo valid_cedulas.json con un arreglo de strings: ["15545334","17905069", ...]
+let VALID_CEDULAS = new Set();
+async function loadValidCedulas(){
+  try{
+    const res = await fetch('valid_cedulas.json', { cache: 'no-store' });
+    if(res.ok){
+      const arr = await res.json();
+      VALID_CEDULAS = new Set(arr.map(String));
+    }
+  }catch(e){ console.warn('No se pudo cargar valid_cedulas.json'); }
+}
+loadValidCedulas();/ opcional, no se usa ya para asignar equipo
+
+// Lista blanca de cédulas habilitadas (sin dígito verificador).
+// Cargada desde un archivo externo para mantener el index.html liviano.
+// Crear en la raíz del repo un archivo valid_cedulas.json con un arreglo de strings: ["15545334","17905069", ...]
+let VALID_CEDULAS = new Set();
+async function loadValidCedulas(){
+  try{
+    constulas.json', { cache: 'no-store' });
+    if(res.ok){
+      const arr = await res.json();
+      VALID_CEDULAS = new Set(arr.map(String));
+    }
+  }catch(e){ console.warn('No se pudo cargar valid_cedulas.json'); }
+}
+loadValidCedulas();
 
     /************ Utilidades UI ************/
     function showTab(id){
       document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
       document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      const idx = ['dashboard','individual','equipos','game','admin'].indexOf(id);
-      if(idx>-1) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+      const idx = ['dashboard','individual','equipos','game','admin'1) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
       if(id==='dashboard'){ refreshDashboard(); }
       if(id==='individual'){ loadIndividualRanking(); }
       if(id==='equipos'){ loadTeamRankingDetailed(); }
@@ -619,40 +648,88 @@
     /************ Carga de preguntas ************/
     async function loadQuestions(){
       try{
-        const res = await fetch('questions_bank.json', { cache: 'no-store' });
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        questionBank = await res.json();
-        document.getElementById('questionsLoading').style.display='none';
-        document.getElementById('questionsSuccess').style.display='block';
-      } catch(err){
-        document.getElementById('questionsLoading').style.display='none';
-        document.getElementById('questionsError').style.display='block';
-        console.error(err);
-      }
-    }
-    loadQuestions();
+        const res = await async function checkParticipantInfo(){
+      const idInput = document.getElementById('playerId');
+      const groupSel = document.getElementById('playerGroup');
+      const startBtn = document.getElementById('startGameBtn');
+      const limitMsg = document.getElementById('intentosMessage');
+      const box = document.getElementById('participantInfo');
 
-    /************ Registro jugador ************/
-    async function checkParticipantInfo(){
-      const id = document.getElementById('playerId').value.trim();
-      if(!id) return;
-      const info = FORO_PARTICIPANTS[id];
-      if(info){ currentPlayer.team = info.grupo||'INDIVIDUAL'; }
+      const idRaw = (idInput.value||'').trim();
+      if(!idRaw){ box.style.display='none'; startBtn.disabled = true; return; }
+      const id = idRaw.replace(/\D/g,''); // solo dígitos
+      idInput.value = id;
+
+      // Validación de cédula contra whitelist
+      if(!VALID_CEDULAS.size){
+        box.style.display='block';
+        box.innerHTML = '⏳ Validando cédula…';
+        startBtn.disabled = true;
+        return;
+      }
+      if(!VALID_CEDULAS.has(id)){
+        box.style.display='block';
+        box.innerHTML = '<span style="color:#ef4444; font-weight:700">❌ Cédula no habilitada para participar.</span>';
+        startBtn.disabled = true;
+        return;
+      }
+
+      // Recuperar intentos previos
       const playerRef = database.ref('players').child(id);
       const snap = await playerRef.get();
-      let attempts = 0, nickname='';
-      if(snap.exists()){ const p = snap.val(); attempts = p.attemptsUsed||0; nickname=p.nickname||''; currentPlayer.team = p.team || currentPlayer.team; }
-      const box = document.getElementById('participantInfo');
+      let attempts = 0, lastNick = '', team = '—';
+      if(snap.exists()){
+        const p = snap.val();
+        attempts = p.attemptsUsed||0;
+        lastNick = p.nickname||'';
+        team = p.team||'—';
+      }
+
       box.style.display = 'block';
-      box.innerHTML = `👤 <b>Grupo:</b> ${currentPlayer.team} · <b>Intentos usados:</b> ${attempts}/${MAX_ATTEMPTS}${nickname?` · <b>Último nick:</b> ${nickname}`:''}`;
+      box.innerHTML = `✅ Cédula validada · <b>Intentos usados:</b> ${attempts}/${MAX_ATTEMPTS}${lastNick?` · <b>Último nick:</b> ${lastNick}`:''}`;
 
-      const btn = document.getElementById('startGameBtn');
-      const limitMsg = document.getElementById('intentosMessage');
-      if(attempts >= MAX_ATTEMPTS){ btn.disabled = true; limitMsg.style.display = 'block'; limitMsg.textContent = '⚠️ Ya usaste tus 2 intentos. Pedí al admin un reset si corresponde.'; }
-      else{ btn.disabled = false; limitMsg.style.display = 'none'; }
-    }
+      // Habilitar/Deshabilitar por intentos + grupo seleccionado
+      if(attempts >= MAX_ATTEMPTS){
+        startBtn.disabled = true;
+        limitMsg.style.display = 'block';
+        limitMsg.textContent = '⚠️ Ya usaste tus 2 intentos. Pedí al admin un reset si corresponde.';
+      } else {
+        limitMsg.style.display = 'none';
+        startBtn.disabled = !(groupSel && (groupSel.value === 'A' || groupSel.value === 'B' || groupSel.value === 'C'));
+      }
+    }     // Validación de cédula contra whitelist
+      if(!VALID_CEDULAS.size){
+        box.style.display='block';
+        box.innerHTML = '⏳ Validando cédula…';
+        startBtn.disabled = true;
+        return;
+      }
+      if(!VALID_CEDULAS.has(id)){
+        box.style.display='block';
+        box.innerHTML = '<span style="color:#ef4444; font-weight:700">❌ Cédula no habilitada para participar.</span>';
+        startBtn.disabled = true;
+        return;
+      }
 
-    /************ Juego ************/
+      // Recuperar intentos previos
+      const playerRef = database.ref('players').child(id);
+      const snap = await playerRef.get();
+      let attempts = 0, lastNick = '', team = '—';
+      if(snap.exists()){
+        const p = snap.val();
+        attempts = p.attemptsUsed||0;
+        lastNick = p.nickname||'';
+        team = p.team||'—';
+      }
+
+      box.style.display = 'block';
+      box.innerHTML = `✅ Cédula validada · <b>Intentos usados:</b> ${attempts}/${MAX_ATTEMPTS}${lastNick?` · <b>Último nick:</b> ${lastNick}`:''}`;
+
+      // Habilitar/Deshabilitar por intentos + grupo seleccionado
+      if(attempts >= MAX_ATTEMPTS){
+        startBtn.disabled = true;
+        limitMsg.style.display = 'block';
+        limitMsg.textContent =*********/
     function startGame(){
       if(gameInProgress) return;
       const name = document.getElementById('playerName').value.trim();
@@ -688,182 +765,4 @@
     function pickQuestionForLevel(level){
       const pool = getPoolForLevel(level).filter(q=> !answeredQuestions.has(q.question));
       const list = pool.length? pool : getPoolForLevel(level); // fallback si se agotó el pool
-      if(!list.length) return null;
-      const q = list[Math.floor(Math.random()*list.length)];
-      answeredQuestions.add(q.question);
-      return q;
-    }
-
-    function nextQuestion(){
-      stopTimer(); timeLeft = TIMER_SECONDS;
-      currentQuestion = pickQuestionForLevel(currentLevel);
-      renderQuestion(); startTimer();
-    }
-
-    function renderQuestion(){
-      if(!currentQuestion){ endGame(false, 'No hay preguntas disponibles'); return; }
-      document.getElementById('questionText').textContent = currentQuestion.question;
-      const container = document.getElementById('optionsContainer');
-      container.innerHTML = '';
-      selectedOption = null; document.getElementById('confirmAnswer').disabled = true;
-      currentQuestion.options.forEach((opt, idx)=>{
-        const div = document.createElement('div');
-        div.className = 'option';
-        div.textContent = opt;
-        div.onclick = ()=> selectOption(idx, div);
-        container.appendChild(div);
-      });
-      document.getElementById('comodin5050').classList.toggle('used', !comodines.fifty);
-      document.getElementById('comodinChange').classList.toggle('used', !comodines.change);
-      updateProgress();
-    }
-
-    function selectOption(idx, el){
-      if(document.querySelector('.option.correct') || document.querySelector('.option.incorrect')) return;
-      document.querySelectorAll('.option').forEach(o=> o.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedOption = idx; document.getElementById('confirmAnswer').disabled = false;
-    }
-
-    function confirmAnswer(){
-      if(selectedOption===null) return;
-      stopTimer();
-      const correctIdx = currentQuestion.answer;
-      const options = document.querySelectorAll('.option');
-      options.forEach((o,i)=>{
-        if(i===correctIdx) o.classList.add('correct');
-        else if(i===selectedOption) o.classList.add('incorrect');
-      });
-
-      if(selectedOption === correctIdx){
-        let pts = SCORING_SYSTEM.BASE_POINTS;
-        if(timeLeft >= SCORING_SYSTEM.TIME_BONUS_THRESHOLD) pts += SCORING_SYSTEM.TIME_BONUS_POINTS;
-        if(currentLevel > SCORING_SYSTEM.HARD_LEVEL_THRESHOLD) pts += SCORING_SYSTEM.HARD_LEVEL_BONUS;
-        correctStreak++;
-        if(correctStreak===5) pts += SCORING_SYSTEM.STREAK_BONUS_5;
-        if(correctStreak===10) pts += SCORING_SYSTEM.STREAK_BONUS_10;
-        score += pts; maxLevelReached = Math.max(maxLevelReached, currentLevel);
-        setTimeout(()=>{
-          if(currentLevel === TOTAL_LEVELS){ endGame(true); }
-          else { currentLevel++; nextQuestion(); }
-        }, 700);
-      } else {
-        correctStreak = 0; lives--; updateLives();
-        setTimeout(()=>{
-          if(lives<=0){ endGame(false); }
-          else { nextQuestion(); }
-        }, 800);
-      }
-    }
-
-    function startTimer(){
-      const el = document.getElementById('gameTimer');
-      el.classList.remove('warning'); el.textContent = timeLeft;
-      timerInterval = setInterval(()=>{
-        timeLeft--; el.textContent = timeLeft; if(timeLeft<=7) el.classList.add('warning');
-        if(timeLeft<=0){ clearInterval(timerInterval); timerInterval=null; // tiempo agotado = incorrecto
-          selectedOption = -1; confirmAnswer();
-        }
-      }, 1000);
-    }
-    function stopTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
-
-    function use5050(){
-      if(!comodines.fifty) return; if(!currentQuestion) return; comodines.fifty=false; document.getElementById('comodin5050').classList.add('used');
-      const correct = currentQuestion.answer;
-      const arr = [0,1,2,3].filter(i=> i!==correct);
-      while(arr.length>2) arr.splice(Math.floor(Math.random()*arr.length),1);
-      const options = document.querySelectorAll('.option');
-      arr.forEach(i=> options[i].classList.add('eliminated'));
-    }
-
-    function changeQuestion(){
-      if(!comodines.change) return; comodines.change=false; document.getElementById('comodinChange').classList.add('used');
-      // no volver a usar misma pregunta
-      stopTimer(); timeLeft = TIMER_SECONDS; 
-      const prevQ = currentQuestion ? currentQuestion.question : null;
-      currentQuestion = pickQuestionForLevel(currentLevel);
-      if(prevQ && currentQuestion && currentQuestion.question === prevQ){ // fuerza cambio si cayó igual
-        currentQuestion = pickQuestionForLevel(currentLevel);
-      }
-      renderQuestion(); startTimer();
-    }
-
-    async function endGame(success, reason=''){
-      stopTimer();
-      document.getElementById('gameInterface').style.display='none';
-      const title = document.getElementById('resultTitle');
-      title.textContent = success? '¡Felicitaciones!': 'Fin de la partida';
-      title.style.color = success? '#22c55e' : '#ef4444';
-
-      const stats = document.getElementById('finalStats');
-      stats.innerHTML = '';
-      const rows = [
-        ['Jugador', currentPlayer.nickname],
-        ['Grupo', currentPlayer.team],
-        ['Nivel alcanzado', maxLevelReached],
-        ['Puntaje', score],
-        ['Resultado', success? 'Completó los 15 niveles' : (reason|| 'Game over')]
-      ];
-      rows.forEach(([k,v])=>{
-        const r = document.createElement('div'); r.className='stats-row'; r.innerHTML = `<div>${k}</div><div><b>${v}</b></div>`; stats.appendChild(r);
-      });
-      const humor = LEVEL_FEEDBACK[maxLevelReached] || 'Buen intento. El corazón aprecia el esfuerzo.';
-      const h = document.createElement('div'); h.style.marginTop='10px'; h.style.fontStyle='italic'; h.textContent = humor; stats.appendChild(h);
-
-      document.getElementById('resultScreen').style.display='block';
-      if(!resultAlreadySaved){ await saveResult(success); resultAlreadySaved=true; }
-    }
-
-    async function saveResult(success){
-      try{
-        const id = currentPlayer.id;
-        const playerRef = database.ref('players').child(id);
-        const now = Date.now();
-        const snap = await playerRef.get();
-        let attempts = 0, bestScore=0, bestLevel=0, team=currentPlayer.team;
-        if(snap.exists()){ const p = snap.val(); attempts = p.attemptsUsed||0; bestScore = p.bestScore||0; bestLevel = p.bestLevel||0; team = p.team||team; }
-        attempts = Math.min(attempts+1, MAX_ATTEMPTS);
-        bestScore = Math.max(bestScore, score); bestLevel = Math.max(bestLevel, maxLevelReached);
-        await playerRef.set({
-          id,
-          name: currentPlayer.name,
-          nickname: currentPlayer.nickname,
-          team,
-          attemptsUsed: attempts,
-          bestScore,
-          bestLevel,
-          lastPlayed: now
-        });
-        const gameRef = database.ref('games').push();
-        await gameRef.set({
-          ts: now,
-          playerId: id,
-          nickname: currentPlayer.nickname,
-          team,
-          score,
-          maxLevel: maxLevelReached,
-          success
-        });
-        showNotification('Resultado guardado');
-      } catch(e){ console.error(e); showNotification('No se pudo guardar el resultado'); }
-    }
-
-    function restartGame(){ document.getElementById('resultScreen').style.display='none'; document.getElementById('startScreen').style.display='block'; checkParticipantInfo(); }
-    function quitGame(){ endGame(false, 'Abandonó la partida'); }
-    function goToDashboard(){ showTab('dashboard'); }
-
-    /************ Boot ************/
-    window.addEventListener('load', ()=>{
-      refreshDashboard();
-      // contador simple de visitas del día
-      const todayKey = new Date().toISOString().slice(0,10);
-      const dayRef = database.ref('stats/daily').child(todayKey);
-      dayRef.transaction(v => (v||0)+1);
-      database.ref('stats/daily').child(todayKey).on('value', snap =>{
-        const total = snap.val()||0; database.ref('stats/visitas_hoy').set(total);
-      });
-    });
-  </script>
-</body>
-</html
+    
