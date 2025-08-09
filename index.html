@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es-UY">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Quién quiere ser cardiólogo? — 15 niveles</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <style>
+    :root{
+      --bg: #0b1220; /* más oscuro */
+      --panel: rgba(15, 23, 42, 0.85);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --brand: #60a5fa;
+      --brand-2: #3b82f6;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(59,130,246,.25);
+    }
+
+    * { box-sizing: border-box; }
+    html,body { height: 100%; }
+    body{
+      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% 10%, #0f1a33 0, transparent 40%),
+                  radial-gradient(1200px 600px at 90% 90%, #0a1226 0, transparent 40%),
+                  linear-gradient(135deg, #0b1220, #0f172a 50%, #0b1220);
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:18px;
+      overflow-x:hidden;
+    }
+
+    .container{
+      width: min(1200px, 100%);
+      background: var(--panel);
+      border:1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 25px 60px rgba(0,0,0,.35), 0 0 0 1px rgba(59,130,246,.12);
+      max-height: 95vh;
+      overflow: hidden;
+      display:flex; flex-direction:column;
+    }
+
+    .stats-bar{
+      display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      background: rgba(59,130,246,.08);
+      border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-family: "JetBrains Mono", monospace; font-size: .9rem;
+      margin-bottom: 14px;
+    }
+    .visit-counter{ color: var(--brand); }
+    .online-players{ color: var(--ok); }
+    .last-update{ color: var(--muted); }
+
+    header { display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    h1{
+      font-size: clamp(1.6rem, 2.6vw, 2.5rem);
+      margin:0;
+      background: linear-gradient(120deg, var(--brand), var(--brand-2));
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-.02em;
+      font-weight:800;
+    }
+    .subtitle{ font-family:"JetBrains Mono", monospace; color:var(--muted); letter-spacing:.06em; }
+
+    .institutional-header{ display:flex; gap:30px; justify-content:center; align-items:center; background: rgba(30, 41, 59, .35); border:1px solid var(--border); border-radius:16px; padding:12px; margin:6px 0 12px; }
+    .logo-container{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .logo{ height:56px; width:auto; opacity:.95; filter:brightness(1.05); transition:transform .25s ease; }
+    .logo:hover{ transform: translateY(-2px) scale(1.03); }
+    .logo-text{ font-family:"JetBrains Mono", monospace; font-size:.78rem; color:var(--muted); text-align:center; }
+
+    .nav-tabs{ display:flex; gap:10px; flex-wrap: wrap; margin: 8px 0 16px; }
+    .nav-tab{ cursor:pointer; padding:10px 16px; border-radius:12px; border:1px solid var(--border); background: rgba(30,58,138,.18); font-family:"JetBrains Mono"; font-size:.92rem; color:var(--text); transition: all .25s; }
+    .nav-tab:hover{ background: rgba(59,130,246,.22); }
+    .nav-tab.active{ background: linear-gradient(135deg, var(--brand-2), #1d4ed8); box-shadow: 0 10px 18px -8px rgba(59,130,246,.4); }
+
+    .tab-content{ display:none; overflow:auto; }
+    .tab-content.active{ display:block; }
+
+    .btn{ border:0; background: linear-gradient(135deg, var(--brand-2), #1d4ed8); color:#fff; font-weight:700; letter-spacing:.02em; padding:12px 20px; border-radius:12px; cursor:pointer; transition: transform .15s, box-shadow .2s; }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px -10px rgba(59,130,246,.6);} 
+    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+    .btn-danger{ background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    .btn-warn{ background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .btn-ghost{ background: transparent; border:1px solid var(--border); color:var(--text); }
+
+    .dashboard-section{ background: rgba(30, 41, 59, .42); border:1px solid var(--border); border-radius:16px; padding:16px; margin: 12px 0; }
+    .stats-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; }
+    .stat-card{ background: rgba(15,23,42,.55); border:1px solid rgba(59,130,246,.15); border-radius:14px; padding:18px; text-align:center; transition:border .2s, transform .15s; }
+    .stat-card:hover{ border-color: rgba(59,130,246,.35); transform: translateY(-2px); }
+    .stat-number{ font: 800 2rem "JetBrains Mono"; color:var(--brand) }
+    .stat-label{ color:var(--muted) }
+
+    .team-rankings{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:14px; }
+    .team-section{ background: rgba(15,23,42,.55); border:1px solid rgba(59,130,246,.18); border-radius:14px; padding:14px; }
+    .team-header{ display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; margin-bottom:8px; }
+    .team-a .team-header{ background: rgba(34,197,94,.12);} .team-b .team-header{ background: rgba(59,130,246,.12);} .team-c .team-header{ background: rgba(251,191,36,.12);} .team-individual .team-header{ background: rgba(139,92,246,.12);}
+    .team-name{ font: 800 1.1rem "JetBrains Mono"; }
+    .team-a .team-name{ color:#22c55e } .team-b .team-name{ color:#3b82f6 } .team-c .team-name{ color:#f59e0b } .team-individual .team-name{ color:#8b5cf6 }
+    .team-stats{ display:flex; gap:12px; color:var(--muted); font-size:.9rem; }
+
+    /* Game */
+    .game-header{ display:flex; align-items:center; justify-content:space-between; gap:16px; background: rgba(30,41,59,.42); border:1px solid var(--border); border-radius:14px; padding:14px; margin: 12px 0 6px; }
+    .game-info{ display:flex; gap:22px; align-items:center; }
+    .info-item{ text-align:center }
+    .info-label{ color:var(--muted); font-size:.85rem }
+    .info-value{ font: 800 1.4rem "JetBrains Mono"; }
+    .level-value{ color:var(--brand) }
+    .score-value{ color:var(--ok) }
+    .lives-value{ color:var(--warn) }
+
+    .timer{ font:800 2rem "JetBrains Mono"; color:var(--danger) }
+    .timer.warning{ animation: pulse 1s infinite; }
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+    .progress-bar{ height:10px; background: rgba(30,41,59,.6); border:1px solid rgba(59,130,246,.2); border-radius: 999px; overflow:hidden; }
+    .progress-fill{ height:100%; background: linear-gradient(90deg, var(--brand-2), var(--brand)); width:0%; transition: width .25s ease; }
+
+    .question-container{ background: rgba(15,23,42,.6); border:1px solid rgba(59,130,246,.2); border-radius: 16px; padding: 18px; margin: 14px 0; }
+    .level-indicator{ font: 600 1rem "JetBrains Mono"; color:var(--muted); margin-bottom:10px; }
+    .question-text{ font-weight:700; font-size: clamp(1.05rem, 1.55vw, 1.3rem); line-height:1.55; }
+
+    .options-container{ display:grid; gap:10px; margin-top:14px; }
+    .option{ background: rgba(30,41,59,.6); border:1px solid rgba(59,130,246,.3); border-radius: 12px; padding: 14px; cursor:pointer; transition: all .2s; }
+    .option:hover{ background: rgba(59,130,246,.18); border-color: var(--brand-2); transform: translateY(-1px); }
+    .option.selected{ background: rgba(59,130,246,.25); border-color: var(--brand-2); }
+    .option.correct{ background: rgba(34,197,94,.22); border-color: #22c55e }
+    .option.incorrect{ background: rgba(239,68,68,.22); border-color: #ef4444 }
+    .option.eliminated{ opacity:.35; cursor:not-allowed; background: rgba(100,116,139,.25); border-color:#64748b }
+
+    .comodines{ display:flex; gap:10px; flex-wrap: wrap; margin:8px 0 2px; justify-content:center }
+    .comodin{ background: rgba(251,191,36,.18); border:1px solid rgba(251,191,36,.38); color:#fbbf24; font-weight:700; padding:10px 14px; border-radius:12px; cursor:pointer; transition:.2s; }
+    .comodin:hover:not(.used){ transform: translateY(-1px) }
+    .comodin.used{ opacity:.35; cursor:not-allowed; color:#9ca3af; border-color:#9ca3af; background: rgba(148,163,184,.18) }
+
+    .game-actions{ display:flex; gap:10px; justify-content:center; margin: 10px 0 6px; }
+
+    .result-screen{ display:none; text-align:center; padding: 16px; }
+    .result-title{ font:800 2.2rem Inter; margin: 8px 0; }
+    .final-stats{ background: rgba(15,23,42,.6); border:1px solid rgba(59,130,246,.2); padding:16px; border-radius:14px; margin:10px 0; text-align:left }
+    .stats-row{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed rgba(59,130,246,.18) }
+    .stats-row:last-child{ border-bottom:0 }
+
+    .loading{ color:var(--muted); font-style: italic; text-align:center; padding:10px 0 }
+    .error-message{ background: rgba(220,38,38,.12); border:1px solid rgba(220,38,38,.35); color:#fca5a5; padding:10px; border-radius:12px; text-align:center; }
+
+    /* Forms */
+    .form-group{ margin: 12px 0; }
+    label{ display:block; margin-bottom:6px; font-weight:600; color:var(--brand) }
+    input, select{ width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background: rgba(30,41,59,.85); color:var(--text); }
+    input:focus,select:focus{ outline:none; border-color: var(--brand-2); box-shadow: 0 0 0 3px rgba(59,130,246,.15) }
+
+    /* Toast */
+    .notification{ position: fixed; right: 18px; top: 18px; background: rgba(15,23,42,.96); border:1px solid var(--border); border-radius: 12px; padding: 12px 14px; transform: translateX(420px); transition: transform .3s ease; max-width: 360px; z-index: 99 }
+    .notification.show{ transform: translateX(0) }
+
+    /* Responsive */
+    @media (max-width: 780px){
+      .container{ max-height: unset; height: auto; }
+      .game-header{ flex-direction:column; align-items: stretch }
+      .game-info{ justify-content:space-between }
+      .timer{ text-align:center }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Top stats bar -->
+    <div class="stats-bar">
+      <div class="visit-counter">🌐 Visitas: <span id="visitCount">-</span></div>
+      <div class="online-players">👤 Jugando ahora: <span id="onlinePlayers">-</span></div>
+      <div class="last-update">🔄 Última actualización: <span id="lastUpdate">-</span></div>
+    </div>
+
+    <header>
+      <div>
+        <h1>¿Quién quiere ser cardiólogo?</h1>
+        <div class="subtitle">Competencia individual y por equipos · 15 niveles · 2 intentos por jugador</div>
+      </div>
+      <button class="btn" onclick="refreshDashboard()">🔄 Actualizar</button>
+    </header>
+
+    <!-- Logos -->
+    <div class="institutional-header">
+      <div class="logo-container">
+        <img src="logo-ccu.png" alt="Centro Cardiovascular Universitario" class="logo" id="logo-ccu">
+        <div class="logo-text">Centro Cardiovascular<br>Universitario</div>
+      </div>
+      <div class="logo-container">
+        <img src="logo-uac.png" alt="Unidad Académica de Cardiología" class="logo" id="logo-uac">
+        <div class="logo-text">Unidad Académica<br>de Cardiología</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</div>
+      <div class="nav-tab" onclick="showTab('individual')">🏆 Individual</div>
+      <div class="nav-tab" onclick="showTab('equipos')">👥 Equipos</div>
+      <div class="nav-tab" onclick="showTab('game')">🎮 Jugar</div>
+      <div class="nav-tab" onclick="showTab('admin')">🔐 Admin</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="tab-content active">
+      <div class="dashboard-section">
+        <h2>📈 Estadísticas</h2>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-number" id="totalJugadores">-</div><div class="stat-label">Total Participantes</div></div>
+          <div class="stat-card"><div class="stat-number" id="totalPartidas">-</div><div class="stat-label">Partidas Iniciadas</div></div>
+          <div class="stat-card"><div class="stat-number" id="promedioScore">-</div><div class="stat-label">Puntaje Promedio</div></div>
+          <div class="stat-card"><div class="stat-number" id="nivelMaximo">-</div><div class="stat-label">Nivel Máximo</div></div>
+          <div class="stat-card"><div class="stat-number" id="jugadoresHoy">-</div><div class="stat-label">Participantes Hoy</div></div>
+          <div class="stat-card"><div class="stat-number" id="visitasHoy">-</div><div class="stat-label">Visitas de Hoy</div></div>
+        </div>
+      </div>
+
+      <div class="dashboard-section">
+        <h2>🥇 Ranking de Equipos</h2>
+        <div class="team-rankings" id="teamRankings"><div class="loading">Cargando estadísticas de equipos…</div></div>
+      </div>
+    </section>
+
+    <!-- INDIVIDUAL -->
+    <section id="individual" class="tab-content">
+      <h2>🏆 Ranking Individual</h2>
+      <div id="individualList" class="dashboard-section"><div class="loading">Cargando ranking…</div></div>
+    </section>
+
+    <!-- EQUIPOS -->
+    <section id="equipos" class="tab-content">
+      <h2>👥 Competencia por Equipos</h2>
+      <div id="equiposList" class="dashboard-section"><div class="loading">Cargando…</div></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin" class="tab-content">
+      <h2>🔐 Panel de Administración</h2>
+      <div class="dashboard-section">
+        <p>Acceso restringido</p>
+        <input type="password" id="adminPassword" placeholder="Contraseña" style="max-width:280px">
+        <button class="btn" onclick="verifyAdmin()">Acceder</button>
+        <div id="adminData" style="display:none; margin-top:10px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px">
+            <button class="btn" onclick="exportAdminData()">📥 Descargar CSV</button>
+            <button class="btn btn-warn" onclick="resetAllAttempts()">🔄 Reset Intentos</button>
+            <button class="btn btn-danger" onclick="clearAllDataSafe()">🗑️ Limpiar Datos</button>
+            <button class="btn" onclick="diagnoseFirebase()">🔍 Diagnóstico</button>
+          </div>
+          <div class="dashboard-section">
+            <h3>📋 Participantes</h3>
+            <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px">
+              <input id="searchCedula" placeholder="Cédula (ej: 4944513)" style="max-width:220px">
+              <button class="btn btn-ghost" onclick="searchCedula()">🔎 Buscar</button>
+            </div>
+            <div id="searchResults" class="loading">—</div>
+            <div id="adminTable" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="game" class="tab-content">
+      <div id="startScreen">
+        <h2>🎮 Preparación</h2>
+        <p class="subtitle">Registrate para jugar · 2 intentos máximo · El ranking muestra tu pseudónimo</p>
+        <form onsubmit="event.preventDefault(); startGame();">
+          <div class="form-group">
+            <label for="playerName">📝 Nombre y apellido</label>
+            <input id="playerName" required placeholder="Dra. Ana Pérez" />
+          </div>
+          <div class="form-group">
+            <label for="playerNickname">🎭 Pseudónimo (ranking público)</label>
+            <input id="playerNickname" required maxlength="20" placeholder="CardioMaster2025" />
+            <small style="color:var(--muted)">3–20 caracteres, letras/números/guion bajo</small>
+          </div>
+          <div class="form-group">
+            <label for="playerId">🆔 Cédula (sin dígito verificador)</label>
+            <input id="playerId" required placeholder="1234567" onblur="checkParticipantInfo()" />
+          </div>
+        </form>
+
+        <div id="participantInfo" style="display:none; margin:10px 0; padding:12px; border:1px solid var(--border); border-radius:12px; background: rgba(59,130,246,.08);"></div>
+
+        <div class="dashboard-section" style="font-size:.92rem">
+          🏆 <strong>Competencia:</strong> tu grupo se asigna automáticamente si estás registrado; si no, competís en Individual.<br>
+          🔒 <strong>Privacidad:</strong> tu nombre real queda privado; en rankings aparece tu pseudónimo.<br>
+          ⏳ <strong>Límites:</strong> máximo 2 intentos por persona.<br>
+          📚 <strong>Categorías:</strong> de “☕ Interno con café frío” a “👑 Señor del Miocardio” en 15 niveles.
+        </div>
+
+        <div id="intentosMessage" style="display:none; color:var(--warn); font-weight:700; margin-top:8px"></div>
+
+        <div id="questionsStatus" class="loading" style="margin-top:8px">
+          <div id="questionsLoading">📚 Cargando banco de preguntas…</div>
+          <div id="questionsError" style="display:none; color:var(--danger)">❌ Error cargando preguntas. Verifica questions_bank.json</div>
+          <div id="questionsSuccess" style="display:none; color:var(--ok)">✅ Banco de preguntas cargado</div>
+        </div>
+
+        <button id="startGameBtn" class="btn" onclick="startGame()" style="margin-top:10px">🚀 Comenzar</button>
+      </div>
+
+      <div id="gameInterface" class="game-interface" style="display:none">
+        <div class="game-header">
+          <div class="game-info">
+            <div class="info-item"><div class="info-label">Nivel</div><div id="gameLevel" class="info-value level-value">1</div></div>
+            <div class="info-item"><div class="info-label">Puntaje</div><div id="gameScore" class="info-value score-value">0</div></div>
+            <div class="info-item"><div class="info-label">Vidas</div><div id="gameLives" class="info-value lives-value">❤️❤️❤️</div></div>
+          </div>
+          <div id="gameTimer" class="timer">30</div>
+        </div>
+        <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+
+        <div class="question-container">
+          <div id="levelIndicator" class="level-indicator">Nivel 1 — …</div>
+          <div id="questionText" class="question-text">Cargando pregunta…</div>
+          <div id="optionsContainer" class="options-container"></div>
+        </div>
+
+        <div class="comodines">
+          <div id="comodin5050" class="comodin" onclick="use5050()">🎯 50/50</div>
+          <div id="comodinChange" class="comodin" onclick="changeQuestion()">🔄 Cambiar Pregunta</div>
+        </div>
+
+        <div class="game-actions">
+          <button id="confirmAnswer" class="btn" onclick="confirmAnswer()" disabled>Confirmar</button>
+          <button class="btn btn-danger" onclick="quitGame()">Abandonar</button>
+        </div>
+      </div>
+
+      <div id="resultScreen" class="result-screen">
+        <div id="resultTitle" class="result-title">¡Listo!</div>
+        <div id="finalStats" class="final-stats"></div>
+        <div style="display:flex; gap:8px; justify-content:center; margin-top:8px">
+          <button class="btn" onclick="restartGame()">🔄 Jugar Otra Vez</button>
+          <button class="btn btn-ghost" onclick="goToDashboard()">📊 Ver Dashboard</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script>
+    /************ Firebase ************/
+    const firebaseConfig = {
+      apiKey: "AIzaSyAF1UK57tg4jK856RSU7Qcr1MT8QEeY4-o",
+      authDomain: "cardiologia-game-uy.firebaseapp.com",
+      databaseURL: "https://cardiologia-game-uy-default-rtdb.firebaseio.com",
+      projectId: "cardiologia-game-uy",
+      storageBucket: "cardiologia-game-uy.firebasestorage.app",
+      messagingSenderId: "950754238661",
+      appId: "1:950754238661:web:3df1bc9c9089f3308410ac",
+      measurementId: "G-R6SPME7MHK"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    /************ Estado global ************/
+    const ADMIN_PASSWORD = "cardio2025admin";
+    const MAX_ATTEMPTS = 2;
+    const TIMER_SECONDS = 30;
+    const TOTAL_LEVELS = 15;
+
+    const SCORING_SYSTEM = {
+      BASE_POINTS: 1,
+      TIME_BONUS_THRESHOLD: 20,
+      TIME_BONUS_POINTS: 1,
+      HARD_LEVEL_THRESHOLD: 12, // bonifica niveles 13–15
+      HARD_LEVEL_BONUS: 1,
+      STREAK_BONUS_5: 3,
+      STREAK_BONUS_10: 5,
+      PERFECT_GAME_BONUS: 10
+    };
+
+    let currentPlayer = { name: '', nickname: '', id: '', team: 'INDIVIDUAL' };
+    let currentLevel = 1, score = 0, lives = 3, maxLevelReached = 1;
+    let currentQuestion = null; let answeredQuestions = new Set();
+    let timeLeft = TIMER_SECONDS; let timerInterval = null;
+    let comodines = { fifty: true, change: true };
+    let selectedOption = null; let gameInProgress = false; let resultAlreadySaved = false;
+    let questionBank = [];
+    let correctStreak = 0; let currentSessionId = null; let gameStartId = null;
+
+    /************ Niveles con sarcasmo + feedback ************/
+    const LEVEL_CATEGORIES = {
+      1:  { name: "☕ Interno con café frío",          concept: "Sabés que el VD no es ‘el otro’ ventrículo." },
+      2:  { name: "📉 Estadista del BNP",               concept: "Opinás con intervalos de confianza, no con corazonadas." },
+      3:  { name: "🧪 Domador de diuréticos",           concept: "Furo + tiazida: tu maridaje favorito." },
+      4:  { name: "🧰 Orfebre de la poscarga",          concept: "El nitroprusiato no te vuela la tapa… ni la PAM." },
+      5:  { name: "📈 Pastor de catecolaminas",         concept: "La norepi te sigue; la dopa, no tanto." },
+      6:  { name: "📡 Swan-Ganz Whisperer",             concept: "Leés el VTI como si fuera poesía." },
+      7:  { name: "🩺 Anti-taquicardia",                concept: "Si late a 150, no es entusiasmo." },
+      8:  { name: "🏗️ Arquitecto del shock",            concept: "Construís perfusión donde no la hay." },
+      9:  { name: "🌀 Portero de ECMO",                 concept: "Sabés quién entra y quién sale del circuito." },
+      10: { name: "🌉 Puenteador profesional",          concept: "Del inotrópico al trasplante sin caerte." },
+      11: { name: "🧬 Inmuno-maestro",                   concept: "Tacrolimus sin que te tiemble el pulso." },
+      12: { name: "🕵️ CAV Hunter",                      concept: "Detectás íntima engrosada hasta dormido." },
+      13: { name: "🔮 Oráculo hemodinámico",             concept: "Predecís PVR con solo mirar la cara." },
+      14: { name: "🧭 Jefe de terapias avanzadas",       concept: "Mandás la TRC y también la lista." },
+      15: { name: "👑 Señor del Miocardio",              concept: "Hay un nuevo corazón y te hace caso." }
+    };
+
+    const LEVEL_FEEDBACK = {
+      1:  "Te ganaste un vaso de suero fisiológico… a temperatura ambiente.",
+      2:  "Te dejan mirar el ecógrafo (de lejos).",
+      3:  "Te prestan el Swan-Ganz, pero solo para la foto.",
+      4:  "Te invitan a ajustar la furosemida (con supervisión).",
+      5:  "Podés tocar la bomba… la de infusión, no la de ECMO.",
+      6:  "La norepi ya te saluda por tu nombre.",
+      7:  "Tu ECG te mandó solicitud de amistad.",
+      8:  "Hiciste perfundir hasta el sarcasmo.",
+      9:  "Pase VIP a la sala de ECMO (sin tocar el botón rojo).",
+      10: "Te tuteás con el coordinador de trasplantes (con respeto).",
+      11: "Ajustás tacrolimus y te queda parejo el nivel.",
+      12: "Detectás CAV con intuición y una servilleta.",
+      13: "Te piden segundas opiniones… y también el café.",
+      14: "Hiciste ‘shock management speedrun’ sin glitches.",
+      15: "Honoris causa: ‘Señor del Miocardio’. Podés apagar el monitor… si querés."
+    };
+
+    /************ Participantes del foro (mapa) ************/
+    // (Recortado: podés pegar aquí tu FORO_PARTICIPANTS original si querés validación estricta)
+    const FORO_PARTICIPANTS = {};
+
+    /************ Utilidades UI ************/
+    function showTab(id){
+      document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      const idx = ['dashboard','individual','equipos','game','admin'].indexOf(id);
+      if(idx>-1) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+      if(id==='dashboard'){ refreshDashboard(); }
+      if(id==='individual'){ loadIndividualRanking(); }
+      if(id==='equipos'){ loadTeamRankingDetailed(); }
+    }
+
+    function showNotification(msg){
+      const el = document.getElementById('notification');
+      el.textContent = msg; el.classList.add('show');
+      setTimeout(()=> el.classList.remove('show'), 3200);
+    }
+
+    function formatDateTime(ts){ const d = new Date(ts); return d.toLocaleString(); }
+
+    /************ Presencia / visitas ************/
+    (function initPresence(){
+      const visitRef = database.ref('stats/visits');
+      visitRef.transaction(v => (v||0) + 1);
+      database.ref('stats/visits').on('value', snap => {
+        document.getElementById('visitCount').textContent = snap.val()||0;
+      });
+      document.getElementById('lastUpdate').textContent = formatDateTime(Date.now());
+
+      const presenceRef = database.ref('presence');
+      const myRef = presenceRef.push(true);
+      myRef.onDisconnect().remove();
+      presenceRef.on('value', snap => {
+        document.getElementById('onlinePlayers').textContent = snap.numChildren();
+      });
+    })();
+
+    /************ Dashboard / rankings ************/
+    async function refreshDashboard(){
+      const playersSnap = await database.ref('players').get();
+      const players = playersSnap.exists()? playersSnap.val(): {};
+
+      const gamesSnap = await database.ref('games').get();
+      const games = gamesSnap.exists()? gamesSnap.val(): {};
+
+      const list = Object.values(players);
+      const totalJug = list.length;
+      const totalPart = Object.keys(games).length;
+      const avgScore = list.length? Math.round(list.reduce((a,p)=>a+(p.bestScore||0),0)/list.length) : 0;
+      const maxLevel = list.reduce((m,p)=> Math.max(m, p.bestLevel||0), 0);
+
+      document.getElementById('totalJugadores').textContent = totalJug || 0;
+      document.getElementById('totalPartidas').textContent = totalPart || 0;
+      document.getElementById('promedioScore').textContent = avgScore || 0;
+      document.getElementById('nivelMaximo').textContent = maxLevel || 0;
+
+      // Hoy (aprox.):
+      const today = new Date(); today.setHours(0,0,0,0);
+      const ts0 = today.getTime();
+      const jugadoresHoy = list.filter(p => (p.lastPlayed||0) >= ts0).length;
+      const visitasHoySnap = await database.ref('stats/visitas_hoy').get();
+      document.getElementById('jugadoresHoy').textContent = jugadoresHoy;
+      document.getElementById('visitasHoy').textContent = visitasHoySnap.exists()? visitasHoySnap.val(): '-';
+
+      loadTeamRankings(players);
+    }
+
+    function loadTeamRankings(playersObj){
+      const container = document.getElementById('teamRankings');
+      container.innerHTML = '';
+      const teams = { A: [], B: [], C: [], INDIVIDUAL: [] };
+      Object.values(playersObj||{}).forEach(p => {
+        (teams[p.team||'INDIVIDUAL'] ||= []).push(p);
+      });
+      const order = ['A','B','C','INDIVIDUAL'];
+      order.forEach(key => {
+        const arr = teams[key]||[];
+        const teamScore = arr.reduce((a,p)=> a + (p.bestScore||0), 0);
+        const teamLvl = arr.reduce((m,p)=> Math.max(m, p.bestLevel||0), 0);
+        const card = document.createElement('div');
+        card.className = `team-section team-${key==='INDIVIDUAL'?'individual':key.toLowerCase()}`;
+        card.innerHTML = `
+          <div class="team-header"><div class="team-name">Grupo ${key}</div><div>👥 ${arr.length}</div></div>
+          <div class="team-stats"><div>🔢 Puntaje total: <b>${teamScore}</b></div><div>⭐ Nivel máximo: <b>${teamLvl}</b></div></div>
+        `;
+        container.appendChild(card);
+      });
+      if(!container.children.length){ container.innerHTML = '<div class="loading">Sin datos aún</div>'; }
+    }
+
+    async function loadIndividualRanking(){
+      const wrap = document.getElementById('individualList');
+      wrap.innerHTML = '';
+      const snap = await database.ref('players').get();
+      const rows = snap.exists()? Object.values(snap.val()): [];
+      rows.sort((a,b)=> (b.bestScore||0) - (a.bestScore||0));
+      const list = rows.slice(0, 100).map((p,i)=> `<div class="stats-row"><div>#${i+1} — ${p.nickname||'—'} <span style="color:var(--muted)">(${p.team||'INDIVIDUAL'})</span></div><div>⭐ ${p.bestLevel||0} · 🔢 ${p.bestScore||0}</div></div>`).join('');
+      wrap.innerHTML = list || '<div class="loading">Aún no hay partidas registradas</div>';
+    }
+
+    async function loadTeamRankingDetailed(){
+      const wrap = document.getElementById('equiposList');
+      wrap.innerHTML = '';
+      const snap = await database.ref('players').get();
+      const rows = snap.exists()? Object.values(snap.val()): [];
+      const byTeam = {};
+      rows.forEach(p=>{ (byTeam[p.team||'INDIVIDUAL'] ||= []).push(p); });
+      Object.keys(byTeam).forEach(t=>{
+        const section = document.createElement('div');
+        section.className = 'dashboard-section';
+        const arr = byTeam[t];
+        arr.sort((a,b)=> (b.bestScore||0)-(a.bestScore||0));
+        section.innerHTML = `<h3>Grupo ${t}</h3>` + arr.map(p=> `<div class="stats-row"><div>${p.nickname||'—'}</div><div>⭐ ${p.bestLevel||0} · 🔢 ${p.bestScore||0}</div></div>`).join('');
+        wrap.appendChild(section);
+      })
+      if(!wrap.children.length){ wrap.innerHTML = '<div class="loading">Aún no hay datos</div>'; }
+    }
+
+    /************ Admin ************/
+    let isAdminAuthenticated = false;
+    function verifyAdmin(){
+      const pass = document.getElementById('adminPassword').value.trim();
+      if(pass === ADMIN_PASSWORD){ isAdminAuthenticated = true; document.getElementById('adminData').style.display='block'; buildAdminTable(); showNotification('Acceso de admin concedido'); }
+      else{ isAdminAuthenticated=false; showNotification('Contraseña incorrecta'); }
+    }
+
+    async function buildAdminTable(){
+      const table = document.getElementById('adminTable');
+      const snap = await database.ref('players').get();
+      const rows = snap.exists()? Object.values(snap.val()): [];
+      rows.sort((a,b)=> (b.lastPlayed||0)-(a.lastPlayed||0));
+      table.innerHTML = rows.map(p => `<div class="stats-row"><div>${p.id||'—'} · ${p.nickname||'—'} <span style="color:var(--muted)">(${p.team||'INDIVIDUAL'})</span></div><div>Intentos: ${p.attemptsUsed||0}/${MAX_ATTEMPTS} · ⭐ ${p.bestLevel||0} · 🔢 ${p.bestScore||0}</div></div>`).join('') || '<div class="loading">Sin registros</div>';
+    }
+
+    async function exportAdminData(){
+      const snap = await database.ref('players').get();
+      const rows = snap.exists()? Object.values(snap.val()): [];
+      const header = ['id','name','nickname','team','attemptsUsed','bestLevel','bestScore','lastPlayed'];
+      const csv = [header.join(',')].concat(rows.map(p=> header.map(k=> JSON.stringify(p[k]||'')).join(','))).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='participantes.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    async function resetAllAttempts(){
+      if(!isAdminAuthenticated) return;
+      const snap = await database.ref('players').get();
+      if(snap.exists()){
+        const updates = {};
+        Object.keys(snap.val()).forEach(k => updates[`players/${k}/attemptsUsed`] = 0);
+        await database.ref().update(updates);
+        showNotification('Intentos reseteados'); buildAdminTable();
+      }
+    }
+
+    async function clearAllDataSafe(){
+      if(!isAdminAuthenticated) return;
+      if(!confirm('Esto borrará players y games. ¿Continuar?')) return;
+      await database.ref('players').remove();
+      await database.ref('games').remove();
+      showNotification('Datos limpiados'); buildAdminTable(); refreshDashboard();
+    }
+
+    async function searchCedula(){
+      const q = document.getElementById('searchCedula').value.trim();
+      if(!q){ document.getElementById('searchResults').textContent='—'; return; }
+      const snap = await database.ref('players').child(q).get();
+      if(snap.exists()){
+        const p = snap.val();
+        document.getElementById('searchResults').textContent = `${p.id} · ${p.nickname} (${p.team}) — Intentos ${p.attemptsUsed||0}/${MAX_ATTEMPTS} — ⭐ ${p.bestLevel||0}`;
+      } else {
+        document.getElementById('searchResults').textContent = 'No encontrado';
+      }
+    }
+
+    async function diagnoseFirebase(){
+      try {
+        await database.ref('diag').set({ ts: Date.now() });
+        showNotification('Conexión OK');
+      } catch(e){ showNotification('Error de conexión'); }
+    }
+
+    /************ Carga de preguntas ************/
+    async function loadQuestions(){
+      try{
+        const res = await fetch('questions_bank.json', { cache: 'no-store' });
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        questionBank = await res.json();
+        document.getElementById('questionsLoading').style.display='none';
+        document.getElementById('questionsSuccess').style.display='block';
+      } catch(err){
+        document.getElementById('questionsLoading').style.display='none';
+        document.getElementById('questionsError').style.display='block';
+        console.error(err);
+      }
+    }
+    loadQuestions();
+
+    /************ Registro jugador ************/
+    async function checkParticipantInfo(){
+      const id = document.getElementById('playerId').value.trim();
+      if(!id) return;
+      const info = FORO_PARTICIPANTS[id];
+      if(info){ currentPlayer.team = info.grupo||'INDIVIDUAL'; }
+      const playerRef = database.ref('players').child(id);
+      const snap = await playerRef.get();
+      let attempts = 0, nickname='';
+      if(snap.exists()){ const p = snap.val(); attempts = p.attemptsUsed||0; nickname=p.nickname||''; currentPlayer.team = p.team || currentPlayer.team; }
+      const box = document.getElementById('participantInfo');
+      box.style.display = 'block';
+      box.innerHTML = `👤 <b>Grupo:</b> ${currentPlayer.team} · <b>Intentos usados:</b> ${attempts}/${MAX_ATTEMPTS}${nickname?` · <b>Último nick:</b> ${nickname}`:''}`;
+
+      const btn = document.getElementById('startGameBtn');
+      const limitMsg = document.getElementById('intentosMessage');
+      if(attempts >= MAX_ATTEMPTS){ btn.disabled = true; limitMsg.style.display = 'block'; limitMsg.textContent = '⚠️ Ya usaste tus 2 intentos. Pedí al admin un reset si corresponde.'; }
+      else{ btn.disabled = false; limitMsg.style.display = 'none'; }
+    }
+
+    /************ Juego ************/
+    function startGame(){
+      if(gameInProgress) return;
+      const name = document.getElementById('playerName').value.trim();
+      const nickname = document.getElementById('playerNickname').value.trim();
+      const id = document.getElementById('playerId').value.trim();
+      if(!name || !nickname || !id){ showNotification('Completá tus datos'); return; }
+      currentPlayer = { name, nickname, id, team: currentPlayer.team||'INDIVIDUAL' };
+      gameInProgress = true; resultAlreadySaved=false;
+      currentLevel=1; score=0; lives=3; correctStreak=0; maxLevelReached=1; selectedOption=null; answeredQuestions.clear();
+      comodines = { fifty: true, change: true };
+      updateLives();
+      currentSessionId = 's_'+Date.now(); gameStartId = currentSessionId;
+      document.getElementById('startScreen').style.display='none';
+      document.getElementById('gameInterface').style.display='block';
+      updateProgress();
+      nextQuestion();
+    }
+
+    function updateProgress(){
+      document.getElementById('gameLevel').textContent = currentLevel;
+      document.getElementById('gameScore').textContent = score;
+      document.getElementById('levelIndicator').textContent = `Nivel ${currentLevel} — ${LEVEL_CATEGORIES[currentLevel].name} · ${LEVEL_CATEGORIES[currentLevel].concept}`;
+      document.getElementById('progressFill').style.width = (((currentLevel-1)/TOTAL_LEVELS)*100).toFixed(2)+'%';
+    }
+
+    function updateLives(){
+      const hearts = '❤️'.repeat(Math.max(lives,0));
+      document.getElementById('gameLives').textContent = hearts || '—';
+    }
+
+    function getPoolForLevel(level){ return questionBank.filter(q => q.level === level); }
+
+    function pickQuestionForLevel(level){
+      const pool = getPoolForLevel(level).filter(q=> !answeredQuestions.has(q.question));
+      const list = pool.length? pool : getPoolForLevel(level); // fallback si se agotó el pool
+      if(!list.length) return null;
+      const q = list[Math.floor(Math.random()*list.length)];
+      answeredQuestions.add(q.question);
+      return q;
+    }
+
+    function nextQuestion(){
+      stopTimer(); timeLeft = TIMER_SECONDS;
+      currentQuestion = pickQuestionForLevel(currentLevel);
+      renderQuestion(); startTimer();
+    }
+
+    function renderQuestion(){
+      if(!currentQuestion){ endGame(false, 'No hay preguntas disponibles'); return; }
+      document.getElementById('questionText').textContent = currentQuestion.question;
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+      selectedOption = null; document.getElementById('confirmAnswer').disabled = true;
+      currentQuestion.options.forEach((opt, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'option';
+        div.textContent = opt;
+        div.onclick = ()=> selectOption(idx, div);
+        container.appendChild(div);
+      });
+      document.getElementById('comodin5050').classList.toggle('used', !comodines.fifty);
+      document.getElementById('comodinChange').classList.toggle('used', !comodines.change);
+      updateProgress();
+    }
+
+    function selectOption(idx, el){
+      if(document.querySelector('.option.correct') || document.querySelector('.option.incorrect')) return;
+      document.querySelectorAll('.option').forEach(o=> o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedOption = idx; document.getElementById('confirmAnswer').disabled = false;
+    }
+
+    function confirmAnswer(){
+      if(selectedOption===null) return;
+      stopTimer();
+      const correctIdx = currentQuestion.answer;
+      const options = document.querySelectorAll('.option');
+      options.forEach((o,i)=>{
+        if(i===correctIdx) o.classList.add('correct');
+        else if(i===selectedOption) o.classList.add('incorrect');
+      });
+
+      if(selectedOption === correctIdx){
+        let pts = SCORING_SYSTEM.BASE_POINTS;
+        if(timeLeft >= SCORING_SYSTEM.TIME_BONUS_THRESHOLD) pts += SCORING_SYSTEM.TIME_BONUS_POINTS;
+        if(currentLevel > SCORING_SYSTEM.HARD_LEVEL_THRESHOLD) pts += SCORING_SYSTEM.HARD_LEVEL_BONUS;
+        correctStreak++;
+        if(correctStreak===5) pts += SCORING_SYSTEM.STREAK_BONUS_5;
+        if(correctStreak===10) pts += SCORING_SYSTEM.STREAK_BONUS_10;
+        score += pts; maxLevelReached = Math.max(maxLevelReached, currentLevel);
+        setTimeout(()=>{
+          if(currentLevel === TOTAL_LEVELS){ endGame(true); }
+          else { currentLevel++; nextQuestion(); }
+        }, 700);
+      } else {
+        correctStreak = 0; lives--; updateLives();
+        setTimeout(()=>{
+          if(lives<=0){ endGame(false); }
+          else { nextQuestion(); }
+        }, 800);
+      }
+    }
+
+    function startTimer(){
+      const el = document.getElementById('gameTimer');
+      el.classList.remove('warning'); el.textContent = timeLeft;
+      timerInterval = setInterval(()=>{
+        timeLeft--; el.textContent = timeLeft; if(timeLeft<=7) el.classList.add('warning');
+        if(timeLeft<=0){ clearInterval(timerInterval); timerInterval=null; // tiempo agotado = incorrecto
+          selectedOption = -1; confirmAnswer();
+        }
+      }, 1000);
+    }
+    function stopTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
+
+    function use5050(){
+      if(!comodines.fifty) return; if(!currentQuestion) return; comodines.fifty=false; document.getElementById('comodin5050').classList.add('used');
+      const correct = currentQuestion.answer;
+      const arr = [0,1,2,3].filter(i=> i!==correct);
+      while(arr.length>2) arr.splice(Math.floor(Math.random()*arr.length),1);
+      const options = document.querySelectorAll('.option');
+      arr.forEach(i=> options[i].classList.add('eliminated'));
+    }
+
+    function changeQuestion(){
+      if(!comodines.change) return; comodines.change=false; document.getElementById('comodinChange').classList.add('used');
+      // no volver a usar misma pregunta
+      stopTimer(); timeLeft = TIMER_SECONDS; 
+      const prevQ = currentQuestion ? currentQuestion.question : null;
+      currentQuestion = pickQuestionForLevel(currentLevel);
+      if(prevQ && currentQuestion && currentQuestion.question === prevQ){ // fuerza cambio si cayó igual
+        currentQuestion = pickQuestionForLevel(currentLevel);
+      }
+      renderQuestion(); startTimer();
+    }
+
+    async function endGame(success, reason=''){
+      stopTimer();
+      document.getElementById('gameInterface').style.display='none';
+      const title = document.getElementById('resultTitle');
+      title.textContent = success? '¡Felicitaciones!': 'Fin de la partida';
+      title.style.color = success? '#22c55e' : '#ef4444';
+
+      const stats = document.getElementById('finalStats');
+      stats.innerHTML = '';
+      const rows = [
+        ['Jugador', currentPlayer.nickname],
+        ['Grupo', currentPlayer.team],
+        ['Nivel alcanzado', maxLevelReached],
+        ['Puntaje', score],
+        ['Resultado', success? 'Completó los 15 niveles' : (reason|| 'Game over')]
+      ];
+      rows.forEach(([k,v])=>{
+        const r = document.createElement('div'); r.className='stats-row'; r.innerHTML = `<div>${k}</div><div><b>${v}</b></div>`; stats.appendChild(r);
+      });
+      const humor = LEVEL_FEEDBACK[maxLevelReached] || 'Buen intento. El corazón aprecia el esfuerzo.';
+      const h = document.createElement('div'); h.style.marginTop='10px'; h.style.fontStyle='italic'; h.textContent = humor; stats.appendChild(h);
+
+      document.getElementById('resultScreen').style.display='block';
+      if(!resultAlreadySaved){ await saveResult(success); resultAlreadySaved=true; }
+    }
+
+    async function saveResult(success){
+      try{
+        const id = currentPlayer.id;
+        const playerRef = database.ref('players').child(id);
+        const now = Date.now();
+        const snap = await playerRef.get();
+        let attempts = 0, bestScore=0, bestLevel=0, team=currentPlayer.team;
+        if(snap.exists()){ const p = snap.val(); attempts = p.attemptsUsed||0; bestScore = p.bestScore||0; bestLevel = p.bestLevel||0; team = p.team||team; }
+        attempts = Math.min(attempts+1, MAX_ATTEMPTS);
+        bestScore = Math.max(bestScore, score); bestLevel = Math.max(bestLevel, maxLevelReached);
+        await playerRef.set({
+          id,
+          name: currentPlayer.name,
+          nickname: currentPlayer.nickname,
+          team,
+          attemptsUsed: attempts,
+          bestScore,
+          bestLevel,
+          lastPlayed: now
+        });
+        const gameRef = database.ref('games').push();
+        await gameRef.set({
+          ts: now,
+          playerId: id,
+          nickname: currentPlayer.nickname,
+          team,
+          score,
+          maxLevel: maxLevelReached,
+          success
+        });
+        showNotification('Resultado guardado');
+      } catch(e){ console.error(e); showNotification('No se pudo guardar el resultado'); }
+    }
+
+    function restartGame(){ document.getElementById('resultScreen').style.display='none'; document.getElementById('startScreen').style.display='block'; checkParticipantInfo(); }
+    function quitGame(){ endGame(false, 'Abandonó la partida'); }
+    function goToDashboard(){ showTab('dashboard'); }
+
+    /************ Boot ************/
+    window.addEventListener('load', ()=>{
+      refreshDashboard();
+      // contador simple de visitas del día
+      const todayKey = new Date().toISOString().slice(0,10);
+      const dayRef = database.ref('stats/daily').child(todayKey);
+      dayRef.transaction(v => (v||0)+1);
+      database.ref('stats/daily').child(todayKey).on('value', snap =>{
+        const total = snap.val()||0; database.ref('stats/visitas_hoy').set(total);
+      });
+    });
+  </script>
+</body>
+</html

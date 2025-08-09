@@ -1,0 +1,662 @@
+[
+  {
+    "question": "Paciente joven con miocardiopatía dilatada (FEVI 10%) y shock cardiogénico por bajo gasto. TA 78/48 mmHg, piel fría, relleno capilar lento. ¿Vasopresor inicial recomendado para restaurar perfusión sin aumentar arritmias?",
+    "options": [
+      "Dopamina",
+      "Norepinefrina",
+      "Epinefrina",
+      "Fenilefrina"
+    ],
+    "answer": 1,
+    "level": 1
+  },
+  {
+    "question": "En un debut de insuficiencia cardíaca avanzada por miocardiopatía dilatada con hipotensión, ¿cuál es la conducta con el betabloqueante crónico del paciente?",
+    "options": [
+      "Aumentarlo para contrarrestar la hiperactividad simpática",
+      "Mantener dosis y reevaluar en 24 h",
+      "Suspenderlo transitoriamente hasta estabilizar hemodinámica",
+      "Cambiar a carvedilol por su efecto vasodilatador"
+    ],
+    "answer": 2,
+    "level": 1
+  },
+  {
+    "question": "Joven con DCM grave y bajo gasto. Uruguay: disponibles ECMO VA e IABP, sin dispositivos de asistencia de larga duración. Lactato 5 mmol/L, anuria. ¿Qué soporte invasivo considerás primero como puente a decisión/trasplante si está en shock refractario a fármacos?",
+    "options": [
+      "IABP como única estrategia",
+      "ECMO venoarterial",
+      "ECMO venovenosa",
+      "Marcapaseo transvenoso a 100 lpm"
+    ],
+    "answer": 1,
+    "level": 1
+  },
+  {
+    "question": "Respecto a la etiología en DCM de inicio abrupto con antecedente viral 2 semanas antes y troponina elevada, ¿cuál estudio tiene mejor rendimiento para sugerir miocarditis activa y orientar biopsia?",
+    "options": [
+      "Gammagrafía ósea",
+      "Resonancia cardíaca con realce tardío y T1/T2 mapping",
+      "Eco de estrés con dobutamina",
+      "PET con FDG de cuerpo entero sin preparación"
+    ],
+    "answer": 1,
+    "level": 1
+  },
+  {
+    "question": "Swan-Ganz en shock por bajo gasto: IC 1.6 L/min/m², PCP 24 mmHg, SVR 1900 dyn·s·cm⁻⁵, Sat venosa mixta 52%. ¿Qué patrón hemodinámico describe mejor?",
+    "options": [
+      "Shock distributivo",
+      "Shock hipovolémico",
+      "Shock cardiogénico poscarga alta y congestivo",
+      "Shock obstructivo"
+    ],
+    "answer": 2,
+    "level": 2
+  },
+  {
+    "question": "En DCM con bajo gasto y presión pulmonar elevada, ¿qué inotrópico reduce más la resistencia vascular pulmonar y puede ser útil si hay hipertensión pulmonar reactiva?",
+    "options": [
+      "Dobutamina",
+      "Milrinona",
+      "Norepinefrina",
+      "Vasopresina"
+    ],
+    "answer": 1,
+    "level": 2
+  },
+  {
+    "question": "Sospecha de miocarditis fulminante vs DCM crónica descompensada. ¿Qué hallazgo en la RMC favorece miocarditis?",
+    "options": [
+      "Realce tardío subendocárdico transmural en territorio coronario",
+      "Realce tardío mesomiocárdico o subepicárdico no coronario y edema difuso",
+      "Ausencia total de realce tardío",
+      "Aneurismas apicales múltiples sin edema"
+    ],
+    "answer": 1,
+    "level": 2
+  },
+  {
+    "question": "Respecto a la utilidad de la biopsia endomiocárdica en este contexto (shock, FEVI 10%, arritmias ventriculares), ¿cuál es la indicación más fuerte?",
+    "options": [
+      "Sospecha de miocarditis de células gigantes o eosinofílica",
+      "Todo paciente con DCM",
+      "Solo si el BNP es normal",
+      "Nunca indicada en shock"
+    ],
+    "answer": 0,
+    "level": 2
+  },
+  {
+    "question": "Varón joven con DCM, historia familiar de muerte súbita en 2 parientes <45 años. ¿Qué gen se asocia con DCM y arritmias que motivan cribado familiar prioritario?",
+    "options": [
+      "TTN truncante",
+      "MYH7",
+      "LMNA",
+      "KCNQ1"
+    ],
+    "answer": 2,
+    "level": 3
+  },
+  {
+    "question": "Sobre causas adquiridas de DCM, ¿cuál asociación dosis-dependiente es clásica?",
+    "options": [
+      "Amiodarona 400 mg/día y DCM a 3 meses",
+      "Doxorrubicina con dosis acumulada >300–400 mg/m²",
+      "Hidroclorotiazida crónica",
+      "IECA a dosis altas"
+    ],
+    "answer": 1,
+    "level": 3
+  },
+  {
+    "question": "En Uruguay, ante DCM de etiología incierta, ¿qué estudio serológico/etiológico no debería omitirse por prevalencia regional?",
+    "options": [
+      "Serología para enfermedad de Chagas",
+      "Serología para fiebre amarilla",
+      "Prueba de PPD",
+      "Serología para CMV IgG en población general"
+    ],
+    "answer": 0,
+    "level": 3
+  },
+  {
+    "question": "Paciente con taquicardia sostenida por FA de alta respuesta y FEVI 10%. Tras control de frecuencia a 70 lpm por semanas, FEVI sube a 35%. ¿Qué explica mejor?",
+    "options": [
+      "Miocarditis fulminante resuelta",
+      "Cardiopatía isquémica silente",
+      "Cardiomiopatía inducida por taquicardia",
+      "Artefacto ecocardiográfico"
+    ],
+    "answer": 2,
+    "level": 3
+  },
+  {
+    "question": "Eco en DCM severa: ¿qué hallazgo sugiere mayor riesgo de tromboembolismo y amerita anticoagulación?",
+    "options": [
+      "Aumento leve del grosor septal",
+      "Dilata­ción ventricular izquierda con acinesia apical y trombo mural",
+      "Insuficiencia mitral leve",
+      "Derrame pericárdico trivial"
+    ],
+    "answer": 1,
+    "level": 4
+  },
+  {
+    "question": "En RMC de DCM idiopática, ¿qué patrón de realce tardío es típico y tiene valor pronóstico?",
+    "options": [
+      "Subendocárdico transmural en una arteria",
+      "Mesomiocárdico en banda septal",
+      "Subepicárdico inferolateral transmural",
+      "Ausencia de realce siempre"
+    ],
+    "answer": 1,
+    "level": 4
+  },
+  {
+    "question": "Biopsia endomiocárdica en shock con arritmias y bloqueo AV completo: infiltrado inflamatorio con necrosis extensa y células gigantes multinucleadas. ¿Conducta?",
+    "options": [
+      "Solo soporte hemodinámico",
+      "Inmunosupresión urgente (esteroides + otros) y soporte avanzado",
+      "Suspender todo inotrópico",
+      "Antibiótico de amplio espectro"
+    ],
+    "answer": 1,
+    "level": 4
+  },
+  {
+    "question": "Para diferenciar miocarditis activa de DCM no inflamatoria en laboratorio, ¿qué combinación apoya más miocarditis?",
+    "options": [
+      "Troponina alta, PCR alta, dolor torácico reciente",
+      "BNP normal, D-dímero alto",
+      "Calcio bajo, TSH alta",
+      "Ferritina baja, transferrina alta"
+    ],
+    "answer": 0,
+    "level": 4
+  },
+  {
+    "question": "Paciente congestionado, hipotenso, FEVI 10%. ¿Qué estrategia diurética inicial es más razonable?",
+    "options": [
+      "Infusión continua de furosemida con objetivo de diuresis >150 ml/h y ajuste dinámico",
+      "Tiazida sola",
+      "Restringir líquidos sin diuréticos",
+      "Manitol en bolo"
+    ],
+    "answer": 0,
+    "level": 5
+  },
+  {
+    "question": "En shock cardiogénico por DCM con poscarga elevada, ¿qué vasodilatador puede mejorar el gasto si la TA media lo permite?",
+    "options": [
+      "Nitroprusiato de sodio",
+      "Nitroglicerina a bajas dosis",
+      "Esmolol",
+      "Clonidina"
+    ],
+    "answer": 0,
+    "level": 5
+  },
+  {
+    "question": "Paciente estable tras salida del shock, FEVI 20%. Para iniciar sacubitrilo/valsartán desde enalapril, ¿qué precaución?",
+    "options": [
+      "No requiere intervalo",
+      "Superponer ambos 48 h",
+      "Esperar 36 h de lavado para evitar angioedema",
+      "Suspender diuréticos 72 h antes"
+    ],
+    "answer": 2,
+    "level": 5
+  },
+  {
+    "question": "Hiponatremia dilucional grave en IC avanzada (Na 124 mEq/L) con congestión refractaria. ¿Qué medida puede facilitar corrección segura además de diuresis?",
+    "options": [
+      "Aumentar líquidos libres",
+      "Vasopresina endovenosa",
+      "Vaptán selectivo (tolvaptán) con monitorización",
+      "Hipertónico al 20% en bolo rápido sin control"
+    ],
+    "answer": 2,
+    "level": 5
+  },
+  {
+    "question": "Shock por bajo gasto: FA rápida controlada, IC 1.7 L/min/m², SVR alto, función renal conservada. ¿Inotrópico de elección si querés incrementar contractilidad con mínimo efecto vasodilatador pulmonar?",
+    "options": [
+      "Dobutamina",
+      "Milrinona",
+      "Levosimendán",
+      "Epinefrina"
+    ],
+    "answer": 0,
+    "level": 6
+  },
+  {
+    "question": "Milrinona en DCM con shock: ¿qué consideración clave en insuficiencia renal?",
+    "options": [
+      "Aumentar dosis por menor aclaramiento",
+      "Disminuir dosis y vigilar hipotensión por acumulación",
+      "No se ve afectada por la función renal",
+      "Contraindicada en FA"
+    ],
+    "answer": 1,
+    "level": 6
+  },
+  {
+    "question": "Levosimendán: ¿mecanismo principal útil en bajo gasto con poscarga elevada?",
+    "options": [
+      "Bloqueo de canales de calcio tipo L",
+      "Sensibilización al calcio de troponina C y apertura de canales K_ATP con efecto inodilatador",
+      "Agonismo beta-1 puro",
+      "Inhibición de renina directa"
+    ],
+    "answer": 1,
+    "level": 6
+  },
+  {
+    "question": "Vasopresores en shock cardiogénico: ¿cuál reduce menos el flujo coronario y tiene mejor perfil en hipotensión grave?",
+    "options": [
+      "Norepinefrina",
+      "Dopamina dosis altas",
+      "Fenilefrina",
+      "Vasopresina como monoterapia"
+    ],
+    "answer": 0,
+    "level": 6
+  },
+  {
+    "question": "IABP en DCM severa: ¿cuál es una contraindicación absoluta?",
+    "options": [
+      "Insuficiencia aórtica severa",
+      "FA permanente",
+      "IM funcional moderada",
+      "Edad <30 años"
+    ],
+    "answer": 0,
+    "level": 7
+  },
+  {
+    "question": "ECMO VA en shock refractario: ¿cuál complicación típica requiere vigilancia y a veces descarga del VI?",
+    "options": [
+      "Hipoxemia diferencial (síndrome de Harlequin)",
+      "Hipercapnia aislada",
+      "Hipotermia",
+      "Hipercalcemia"
+    ],
+    "answer": 0,
+    "level": 7
+  },
+  {
+    "question": "Durante ECMO VA, ¿qué signo sugiere distensión de VI que amerita descarga (p. ej., venting, IABP complementario)?",
+    "options": [
+      "Aumento de presión arterial sistólica",
+      "Apertura ausente de válvula aórtica y edema pulmonar",
+      "Descenso del lactato",
+      "Disminución de PVC"
+    ],
+    "answer": 1,
+    "level": 7
+  },
+  {
+    "question": "Comparado con IABP, ¿qué ofrece ECMO VA en shock profundo?",
+    "options": [
+      "Solo aumento de perfusión coronaria",
+      "Soporte circulatorio y respiratorio completo",
+      "Disminución selectiva de poscarga sin oxigenación",
+      "Ninguna ventaja"
+    ],
+    "answer": 1,
+    "level": 7
+  },
+  {
+    "question": "Candidato a trasplante: FEVI 10%, dependencia de inotrópicos, hipotensión recurrente. ¿Qué perfil INTERMACS se aproxima más?",
+    "options": [
+      "Perfil 1 (shock crítico en deterioro)",
+      "Perfil 4 (reposo domiciliario cómodo)",
+      "Perfil 7 (ambulatorio estable)",
+      "Perfil 2 (declive progresivo en soporte inotrópico)"
+    ],
+    "answer": 3,
+    "level": 8
+  },
+  {
+    "question": "¿Cuál es una contraindicación absoluta clásica para trasplante cardíaco?",
+    "options": [
+      "IMC 32 kg/m²",
+      "Infección activa no controlada",
+      "Edad 68 años",
+      "Hipertensión pulmonar reversible con vasodilatadores"
+    ],
+    "answer": 1,
+    "level": 8
+  },
+  {
+    "question": "Pulmonar fija no reversible: ¿qué umbral de PVR se considera riesgoso para trasplante por fallo derecho refractario?",
+    "options": [
+      ">2 UW no reversible",
+      ">3 UW reversible",
+      ">5 UW no reversible",
+      ">1 UW no reversible"
+    ],
+    "answer": 2,
+    "level": 8
+  },
+  {
+    "question": "En Uruguay sin VAD duradero, ¿cuál estrategia de puente a trasplante puede ser más realista en shock persistente?",
+    "options": [
+      "ECMO VA como puente a trasplante",
+      "Total artificial heart",
+      "LVAD de larga duración",
+      "Soporte pulsátil paracorpóreo estándar"
+    ],
+    "answer": 0,
+    "level": 8
+  },
+  {
+    "question": "Donante O+, receptor A+. ¿Qué principio ABO aplica al trasplante cardíaco?",
+    "options": [
+      "Compatibilidad ABO se ignora con crossmatch negativo",
+      "Debe ser compatible ABO; O puede donar a A, pero A no a O",
+      "Cualquiera puede donar si son CMV iguales",
+      "Solo coincide si Rh también coincide"
+    ],
+    "answer": 1,
+    "level": 9
+  },
+  {
+    "question": "Sensibilización elevada (cPRA 80%). ¿Qué efecto esperás en la lista?",
+    "options": [
+      "Espera más corta por prioridad",
+      "Mayor riesgo de rechazo hiperagudo y mayor tiempo de espera",
+      "Ningún impacto",
+      "Imposibilidad legal de trasplante"
+    ],
+    "answer": 1,
+    "level": 9
+  },
+  {
+    "question": "¿Qué método reduce el riesgo de rechazo mediado por anticuerpos en receptor altamente sensibilizado?",
+    "options": [
+      "Solo aumentar esteroides preoperatorios",
+      "Crossmatch virtual y evitación de antígenos donantes específicos",
+      "Evitar inducción",
+      "Usar solo azatioprina"
+    ],
+    "answer": 1,
+    "level": 9
+  },
+  {
+    "question": "Emparejamiento donante-receptor: ¿qué parámetro es útil para evitar mismatch extremo y fallo primario?",
+    "options": [
+      "Color de ojos",
+      "Masa cardíaca predicha/área corporal similares",
+      "Grupo Rh idéntico",
+      "Edad similar exacta"
+    ],
+    "answer": 1,
+    "level": 9
+  },
+  {
+    "question": "Serostatus CMV D+/R− en trasplante: ¿qué estrategia profiláctica es estándar?",
+    "options": [
+      "Ninguna profilaxis",
+      "Ganciclovir/valganciclovir profiláctico prolongado",
+      "Solo aciclovir 5 días",
+      "Vacuna viva preoperatoria"
+    ],
+    "answer": 1,
+    "level": 10
+  },
+  {
+    "question": "Inducción inmunosupresora más usada al implante en alto riesgo inmunológico:",
+    "options": [
+      "Alemtuzumab",
+      "Basiliximab o antitimocito según centro y riesgo",
+      "Interferón alfa",
+      "Nivolumab"
+    ],
+    "answer": 1,
+    "level": 10
+  },
+  {
+    "question": "Mantenimiento inmunosupresor típico post-trasplante temprano:",
+    "options": [
+      "Tacrolimus + micofenolato + corticoides",
+      "Sirolimus en las primeras 2 semanas para cicatrización rápida",
+      "Azatioprina monoterapia",
+      "Corticoides solos"
+    ],
+    "answer": 0,
+    "level": 10
+  },
+  {
+    "question": "Complicación metabólica frecuente por inhibidores de calcineurina:",
+    "options": [
+      "Hipoglucemia",
+      "Nefrotoxicidad con aumento de creatinina",
+      "Hipercalcemia severa",
+      "Hipotiroidismo"
+    ],
+    "answer": 1,
+    "level": 10
+  },
+  {
+    "question": "Rechazo hiperagudo post-trasplante en horas: ¿mecanismo predominante?",
+    "options": [
+      "Linfocitos T citotóxicos",
+      "Anticuerpos preformados contra el endotelio del donante",
+      "Mediado por eosinófilos",
+      "Mediado por neutrófilos solo"
+    ],
+    "answer": 1,
+    "level": 11
+  },
+  {
+    "question": "Cardiac Allograft Vasculopathy (CAV): ¿cuál afirmación es correcta?",
+    "options": [
+      "Afecta segmentos proximales focales como la aterosclerosis clásica",
+      "Es una vasculopatía difusa concéntrica del injerto",
+      "Se previene con altas dosis de estatinas solo si LDL >190",
+      "No impacta supervivencia a largo plazo"
+    ],
+    "answer": 1,
+    "level": 11
+  },
+  {
+    "question": "Seguimiento para rechazo agudo celular el primer año:",
+    "options": [
+      "Solo clínica; no se recomiendan biopsias",
+      "Biopsias endomiocárdicas seriadas según protocolo del centro",
+      "Solo ecocardiograma semanal",
+      "Solo niveles de tacrolimus"
+    ],
+    "answer": 1,
+    "level": 11
+  },
+  {
+    "question": "Post-trasplante, cuál fármaco es útil para reducir progresión de CAV además de estatina si hay HTA:",
+    "options": [
+      "IECA/ARA-II",
+      "Clonidina",
+      "Hidralazina",
+      "Ivabradina"
+    ],
+    "answer": 0,
+    "level": 11
+  },
+  {
+    "question": "Supervivencia mediana post-trasplante cardíaco en adultos, en términos generales:",
+    "options": [
+      "2–3 años",
+      "5 años",
+      "≈12–14 años según cohortes contemporáneas",
+      ">25 años en la mayoría"
+    ],
+    "answer": 2,
+    "level": 12
+  },
+  {
+    "question": "Riesgo oncológico incrementado post-trasplante por inmunosupresión crónica: ¿cuáles son los más frecuentes?",
+    "options": [
+      "Sarcomas óseos",
+      "Cáncer de piel no melanoma y linfoma/PLTD",
+      "Cáncer de páncreas",
+      "Cáncer de tiroides"
+    ],
+    "answer": 1,
+    "level": 12
+  },
+  {
+    "question": "Vacunas en receptores de trasplante:",
+    "options": [
+      "Se recomiendan vacunas vivas atenuadas posoperatorias",
+      "Se evitan vacunas vivas y se priorizan inactivadas",
+      "No se recomienda ninguna vacuna",
+      "Solo influenza viva intranasal"
+    ],
+    "answer": 1,
+    "level": 12
+  },
+  {
+    "question": "Complicación renal crónica luego de años de tacrolimus:",
+    "options": [
+      "Aumento del filtrado glomerular",
+      "Nefroangioesclerosis reversa inmediata",
+      "Nefrotoxicidad crónica con descenso de TFG",
+      "Ningún efecto renal"
+    ],
+    "answer": 2,
+    "level": 12
+  },
+  {
+    "question": "Test de vasorreactividad pulmonar pre-trasplante: ¿qué respuesta sugiere reversibilidad aceptable?",
+    "options": [
+      "Disminución de PVR a <3 UW sin caída crítica de PAM",
+      "Aumento de PVR con óxido nítrico",
+      "PVR se mantiene >6 UW",
+      "Hipotensión severa con caída mínima de PVR"
+    ],
+    "answer": 0,
+    "level": 13
+  },
+  {
+    "question": "En un sistema sin LVAD duradero, ¿cuál es una limitación de ECMO VA como puente a trasplante prolongado?",
+    "options": [
+      "No requiere anticoagulación",
+      "Alta tasa de complicaciones trombóticas y hemorrágicas y difícil rehabilitación prolongada",
+      "Mejora la función renal siempre",
+      "Elimina necesidad de inotrópicos"
+    ],
+    "answer": 1,
+    "level": 13
+  },
+  {
+    "question": "FA con RVR en DCM avanzada, hipotenso, bajo gasto. ¿Antiarrítmico más seguro hemodinámicamente para control de ritmo/frecuencia agudo?",
+    "options": [
+      "Diltiazem IV en bolo",
+      "Amiodarona IV",
+      "Verapamilo IV",
+      "Propranolol IV en altas dosis"
+    ],
+    "answer": 1,
+    "level": 13
+  },
+  {
+    "question": "Candidato joven con DCM, QRS 160 ms con BRI, FEVI 20% tras estabilización. ¿Qué terapia puede mejorar síntomas y remodelado si no va a trasplante inmediato?",
+    "options": [
+      "Marcapaseo VVIR",
+      "CRT (TRC) biventricular si criterios completos",
+      "Aumentar betabloqueante a dosis máximas de inmediato en hipotenso",
+      "Ablación del nodo AV en todos"
+    ],
+    "answer": 1,
+    "level": 13
+  },
+  {
+    "question": "Nitroprusiato en bajo gasto con poscarga elevada: ¿qué riesgo considerar en infusiones altas/prolongadas?",
+    "options": [
+      "Toxicidad por cianuro/tiocianato",
+      "Hipercalcemia",
+      "Broncoconstricción severa",
+      "Bradicardia extrema fija"
+    ],
+    "answer": 0,
+    "level": 14
+  },
+  {
+    "question": "Estrategia de retirada de inotrópicos en paciente que sale de shock con mejoría hemodinámica:",
+    "options": [
+      "Suspender abruptamente todos a la vez",
+      "Weaning gradual monitorizando índice cardíaco, SvO2 y lactato",
+      "Mantener indefinidamente por seguridad",
+      "Cambiar a dopamina para retirar otros"
+    ],
+    "answer": 1,
+    "level": 14
+  },
+  {
+    "question": "ICD en DCM: ¿cuál enunciado es correcto para prevención primaria en este caso candidato a trasplante?",
+    "options": [
+      "Indicar de inmediato incluso en fase aguda",
+      "Generalmente diferir en shock y evaluar tras periodo de optimización; el trasplante puede cambiar la decisión",
+      "Nunca indicado en DCM",
+      "Solo si hay QRS <120 ms"
+    ],
+    "answer": 1,
+    "level": 14
+  },
+  {
+    "question": "Control de IM funcional severa en DCM con shock y poscarga elevada:",
+    "options": [
+      "Solo diuréticos",
+      "Reducción de poscarga puede disminuir IM; considerar vasodilatadores si la PAM lo permite",
+      "Cirugía urgente siempre",
+      "Aumentar precarga con suero fisiológico"
+    ],
+    "answer": 1,
+    "level": 14
+  },
+  {
+    "question": "Lista de trasplante: receptor con mal cumplimiento previo, consumo activo de sustancias y sin red de apoyo. ¿Qué aspecto pesa como contraindicación relativa/absoluta?",
+    "options": [
+      "Edad joven",
+      "Etiología no isquémica",
+      "Factores psicosociales graves que comprometen adherencia",
+      "Ser CMV IgG positivo"
+    ],
+    "answer": 2,
+    "level": 15
+  },
+  {
+    "question": "Tiempo de isquemia fría del injerto: en general, ¿qué objetivo es razonable para minimizar disfunción primaria?",
+    "options": [
+      "<2 horas idealmente; evitar >4–6 horas cuando sea posible",
+      "12–16 horas sin impacto",
+      "No importa si se usa hielo",
+      "Solo importa la altura del donante"
+    ],
+    "answer": 0,
+    "level": 15
+  },
+  {
+    "question": "Prioridad de asignación: paciente en ECMO VA por shock refractario, lactato en descenso pero sin salida de soporte. ¿Cómo suele impactar en la prioridad de lista?",
+    "options": [
+      "Baja prioridad por estar en soporte",
+      "Suele aumentar la prioridad por gravedad y soporte mecánico",
+      "No afecta",
+      "Lo excluye de trasplante"
+    ],
+    "answer": 1,
+    "level": 15
+  },
+  {
+    "question": "Weaning de ECMO VA: ¿qué criterio clínico-hemodinámico sugiere factibilidad de retiro?",
+    "options": [
+      "Lactato creciente",
+      "Ecocardiograma con apertura valvular aórtica, FEVI y VTI en mejoría y requerimientos bajos de vasopresores",
+      "Anuria persistente",
+      "Hipoxemia severa con FiO2 alta"
+    ],
+    "answer": 1,
+    "level": 15
+  }
+]
